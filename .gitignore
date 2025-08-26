@@ -1,0 +1,37 @@
+# ==== Archivos auxiliares de LaTeX ====
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.brf
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# ==== Presentaciones Beamer (si aplica) ====
+*.nav
+*.snm
+*.vrb
+*.xdv
+
+# ==== Carpeta de build opcional ====
+.latex-out/
+
+# ==== Archivos del sistema ====
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ==== Backups de editores ====
+*~
+*.swp
+*.bak
+
