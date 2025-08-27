@@ -6,6 +6,7 @@ on:
     paths:
       - '**.tex'
       - '.github/workflows/pages.yml'
+  workflow_dispatch:  # <-- permite ejecutar manualmente desde Actions
 
 permissions:
   contents: read
@@ -28,10 +29,16 @@ jobs:
         uses: xu-cheng/latex-action@v3
         with:
           root_file: main.tex
-          latexmk_use_lualatex: false
-          latexmk_use_xelatex: false
-          # Si algún día usas XeLaTeX (por fuentes CJK/OT), cambia a:
-          # latexmk_use_xelatex: true
+          # Si usas XeLaTeX en local, cambia a: latexmk_use_xelatex: true
+          args: -pdf -interaction=nonstopmode -file-line-error
+
+      # --- Bloque de DEPURACIÓN: verifica que el PDF exista en el workspace
+      - name: Debug workspace
+        run: |
+          echo "Listando archivos en el workspace:"
+          ls -la
+          echo "Comprobando que main.pdf existe..."
+          test -f main.pdf && echo "OK: main.pdf encontrado" || (echo "ERROR: main.pdf NO existe" && exit 1)
 
       - name: Prepare site (public/)
         run: |
