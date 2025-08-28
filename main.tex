@@ -5,20 +5,30 @@
 \usepackage{lmodern}
 \usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=red]{hyperref}
 
+% Hook opcional (no-op por defecto)
+\providecommand{\chaptersel}{} 
+\chaptersel
+
+\newif\ifonlychapter
+\onlychapterfalse % build normal por defecto
 
 \begin{document}
 
-\frontmatter
-\tableofcontents
+% Si es build normal: frontmatter + TOC + mainmatter.
+% Si es solo capítulo: entra directo a mainmatter y NO hay TOC.
+\ifonlychapter
+  \mainmatter
+\else
+  \frontmatter
+  \tableofcontents
+  \mainmatter
+\fi
 
-\mainmatter
 \include{capitulos/cap1}
 \include{capitulos/cap2}
 \include{capitulos/cap3}
 
 \backmatter
-% Bibliografía irá aquí más adelante
+% Bibliografía más adelante
 
 \end{document}
-
-% trigger pages
