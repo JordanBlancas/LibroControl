@@ -5,8 +5,9 @@ on:
     branches: [ main ]
     paths:
       - '**.tex'
+      - 'capitulos/**.tex'   # mejora 1: incluye los capítulos
       - '.github/workflows/pages.yml'
-  workflow_dispatch:  # <-- permite ejecutar manualmente desde Actions
+  workflow_dispatch:  # permite ejecutar manualmente desde Actions
 
 permissions:
   contents: read
@@ -25,39 +26,75 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build PDF with latexmk
+      - name: Build PDFs (libro + capítulos)
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: main.tex
-          # Si usas XeLaTeX en local, cambia a: latexmk_use_xelatex: true
+          root_file: |
+            main.tex
+            cap1_only.tex
+            cap2_only.tex
+            cap3_only.tex
           args: -pdf -interaction=nonstopmode -file-line-error
 
-      # --- Bloque de DEPURACIÓN: verifica que el PDF exista en el workspace
+      # --- Bloque de DEPURACIÓN: verifica que todos los PDFs existan
       - name: Debug workspace
         run: |
           echo "Listando archivos en el workspace:"
           ls -la
-          echo "Comprobando que main.pdf existe..."
-          test -f main.pdf && echo "OK: main.pdf encontrado" || (echo "ERROR: main.pdf NO existe" && exit 1)
+          for f in main.pdf cap1_only.pdf cap2_only.pdf cap3_only.pdf; do
+            test -f "$f" && echo "OK: $f" || (echo "ERROR: $f NO existe" && exit 1)
+          done
 
       - name: Prepare site (public/)
         run: |
           mkdir -p public
-          cp main.pdf public/LibroControl.pdf
+          # Renombrar PDFs con nombres amigables
+          cp main.pdf       public/LibroControl.pdf
+          cp cap1_only.pdf  public/Capitulo1.pdf
+          cp cap2_only.pdf  public/Capitulo2.pdf
+          cp cap3_only.pdf  public/Capitulo3.pdf
+
           cat > public/index.html << 'EOF'
           <!doctype html>
           <meta charset="utf-8">
-          <title>LibroControl – PDF</title>
+          <title>LibroControl – Publicaciones</title>
           <style>
             body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;margin:24px;line-height:1.5}
             .wrap{max-width:1100px;margin:auto}
-            iframe{width:100%;height:80vh;border:1px solid #ddd;border-radius:12px}
-            a.button{display:inline-block;margin:12px 0;padding:10px 16px;border:1px solid #444;border-radius:10px;text-decoration:none}
+            .row{display:flex;gap:16px;flex-wrap:wrap}
+            .card{flex:1 1 320px;border:1px solid #ddd;border-radius:12px;padding:16px}
+            iframe{width:100%;height:60vh;border:1px solid #ddd;border-radius:10px}
+            a.button{display:inline-block;margin:8px 0;padding:8px 14px;border:1px solid #444;border-radius:10px;text-decoration:none}
+            h2{margin:0 0 8px}
           </style>
           <div class="wrap">
-            <h1>LibroControl</h1>
-            <p><a class="button" href="LibroControl.pdf">⬇️ Descargar PDF</a></p>
-            <iframe src="LibroControl.pdf" title="LibroControl PDF"></iframe>
+            <h1>LibroControl – Publicaciones</h1>
+
+            <div class="row">
+              <div class="card">
+                <h2>📖 Libro completo</h2>
+                <a class="button" href="LibroControl.pdf">⬇️ Descargar PDF</a>
+                <iframe src="LibroControl.pdf" title="Libro completo"></iframe>
+              </div>
+
+              <div class="card">
+                <h2>Capítulo 1</h2>
+                <a class="button" href="Capitulo1.pdf">⬇️ Descargar PDF</a>
+                <iframe src="Capitulo1.pdf" title="Capítulo 1"></iframe>
+              </div>
+
+              <div class="card">
+                <h2>Capítulo 2</h2>
+                <a class="button" href="Capitulo2.pdf">⬇️ Descargar PDF</a>
+                <iframe src="Capitulo2.pdf" title="Capítulo 2"></iframe>
+              </div>
+
+              <div class="card">
+                <h2>Capítulo 3</h2>
+                <a class="button" href="Capitulo3.pdf">⬇️ Descargar PDF</a>
+                <iframe src="Capitulo3.pdf" title="Capítulo 3"></iframe>
+              </div>
+            </div>
           </div>
           EOF
 
@@ -68,6 +105,18 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
+
+      # mejora 3: además de Pages, guarda artifacts por 14 días
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdfs
+          path: |
+            main.pdf
+            cap1_only.pdf
+            cap2_only.pdf
+            cap3_only.pdf
+          retention-days: 14
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
