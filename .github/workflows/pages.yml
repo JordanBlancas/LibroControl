@@ -5,9 +5,8 @@ on:
     branches: [ main ]
     paths:
       - '**.tex'
-      - 'capitulos/**.tex'   # mejora 1: incluye los capítulos
       - '.github/workflows/pages.yml'
-  workflow_dispatch:  # permite ejecutar manualmente desde Actions
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -26,7 +25,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build PDFs (libro + capítulos)
+      - name: Build PDFs (libro + capítulos + resúmenes)  # NEW
         uses: xu-cheng/latex-action@v3
         with:
           root_file: |
@@ -34,25 +33,31 @@ jobs:
             cap1_only.tex
             cap2_only.tex
             cap3_only.tex
+            cap1_resumen.tex       # NEW
+            cap2_resumen.tex       # NEW
+            cap3_resumen.tex       # NEW
           args: -pdf -interaction=nonstopmode -file-line-error
 
-      # --- Bloque de DEPURACIÓN: verifica que todos los PDFs existan
       - name: Debug workspace
         run: |
           echo "Listando archivos en el workspace:"
           ls -la
-          for f in main.pdf cap1_only.pdf cap2_only.pdf cap3_only.pdf; do
-            test -f "$f" && echo "OK: $f" || (echo "ERROR: $f NO existe" && exit 1)
+          for f in main.pdf cap1_only.pdf cap2_only.pdf cap3_only.pdf \
+                   cap1_resumen.pdf cap2_resumen.pdf cap3_resumen.pdf; do
+            test -f "$f" && echo "OK: $f" || (echo "ERROR: falta $f" && exit 1)
           done
 
       - name: Prepare site (public/)
         run: |
           mkdir -p public
           # Renombrar PDFs con nombres amigables
-          cp main.pdf       public/LibroControl.pdf
-          cp cap1_only.pdf  public/Capitulo1.pdf
-          cp cap2_only.pdf  public/Capitulo2.pdf
-          cp cap3_only.pdf  public/Capitulo3.pdf
+          cp main.pdf             public/LibroControl.pdf
+          cp cap1_only.pdf        public/Capitulo1.pdf
+          cp cap2_only.pdf        public/Capitulo2.pdf
+          cp cap3_only.pdf        public/Capitulo3.pdf
+          cp cap1_resumen.pdf     public/Capitulo1_resumen.pdf   # NEW
+          cp cap2_resumen.pdf     public/Capitulo2_resumen.pdf   # NEW
+          cp cap3_resumen.pdf     public/Capitulo3_resumen.pdf   # NEW
 
           cat > public/index.html << 'EOF'
           <!doctype html>
@@ -73,26 +78,29 @@ jobs:
             <div class="row">
               <div class="card">
                 <h2>📖 Libro completo</h2>
-                <a class="button" href="LibroControl.pdf">⬇️ Descargar PDF</a>
-                <iframe src="LibroControl.pdf" title="Libro completo"></iframe>
+                <a class="button" href="LibroControl.pdf?v=${GITHUB_RUN_NUMBER}">⬇️ Descargar PDF</a>
+                <iframe src="LibroControl.pdf?v=${GITHUB_RUN_NUMBER}" title="Libro completo"></iframe>
               </div>
 
               <div class="card">
                 <h2>Capítulo 1</h2>
-                <a class="button" href="Capitulo1.pdf">⬇️ Descargar PDF</a>
-                <iframe src="Capitulo1.pdf" title="Capítulo 1"></iframe>
+                <a class="button" href="Capitulo1.pdf?v=${GITHUB_RUN_NUMBER}">⬇️ Descargar PDF</a>
+                <iframe src="Capitulo1.pdf?v=${GITHUB_RUN_NUMBER}" title="Capítulo 1"></iframe>
+                <p><a href="Capitulo1_resumen.pdf?v=${GITHUB_RUN_NUMBER}">🧭 Ver resumen</a></p> <!-- NEW -->
               </div>
 
               <div class="card">
                 <h2>Capítulo 2</h2>
-                <a class="button" href="Capitulo2.pdf">⬇️ Descargar PDF</a>
-                <iframe src="Capitulo2.pdf" title="Capítulo 2"></iframe>
+                <a class="button" href="Capitulo2.pdf?v=${GITHUB_RUN_NUMBER}">⬇️ Descargar PDF</a>
+                <iframe src="Capitulo2.pdf?v=${GITHUB_RUN_NUMBER}" title="Capítulo 2"></iframe>
+                <p><a href="Capitulo2_resumen.pdf?v=${GITHUB_RUN_NUMBER}">🧭 Ver resumen</a></p> <!-- NEW -->
               </div>
 
               <div class="card">
                 <h2>Capítulo 3</h2>
-                <a class="button" href="Capitulo3.pdf">⬇️ Descargar PDF</a>
-                <iframe src="Capitulo3.pdf" title="Capítulo 3"></iframe>
+                <a class="button" href="Capitulo3.pdf?v=${GITHUB_RUN_NUMBER}">⬇️ Descargar PDF</a>
+                <iframe src="Capitulo3.pdf?v=${GITHUB_RUN_NUMBER}" title="Capítulo 3"></iframe>
+                <p><a href="Capitulo3_resumen.pdf?v=${GITHUB_RUN_NUMBER}">🧭 Ver resumen</a></p> <!-- NEW -->
               </div>
             </div>
           </div>
@@ -106,19 +114,6 @@ jobs:
         with:
           path: public
 
-      # mejora 3: además de Pages, guarda artifacts por 14 días
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdfs
-          path: |
-            main.pdf
-            cap1_only.pdf
-            cap2_only.pdf
-            cap3_only.pdf
-          retention-days: 14
-
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
         id: deployment
- 
