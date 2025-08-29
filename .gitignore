@@ -1,3 +1,6 @@
+# Ignorar PDFs generados
+*.pdf
+
 # ==== Archivos auxiliares de LaTeX ====
 *.aux
 *.bbl
