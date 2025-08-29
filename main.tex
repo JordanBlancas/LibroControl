@@ -5,12 +5,14 @@
 \usepackage{lmodern}
 \usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=red]{hyperref}
 
-% Hook opcional (no-op por defecto)
-\providecommand{\chaptersel}{} 
-\chaptersel
-
+% --- Flag para builds por capítulo (debe ir ANTES de \chaptersel) ---
 \newif\ifonlychapter
 \onlychapterfalse % build normal por defecto
+
+% --- Hook opcional (no-op por defecto; los *_only.tex lo redefinen) ---
+\providecommand{\chaptersel}{}
+\chaptersel
+
 
 \begin{document}
 
