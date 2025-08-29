@@ -6,7 +6,7 @@ on:
     paths:
       - '**.tex'
       - '.github/workflows/pages.yml'
-  workflow_dispatch:
+  workflow_dispatch:  # permite ejecutar manualmente desde Actions
 
 permissions:
   contents: read
@@ -25,7 +25,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build PDFs (libro + capítulos + resúmenes)  # NEW
+      - name: Build PDFs (libro + capítulos + resúmenes)
         uses: xu-cheng/latex-action@v3
         with:
           root_file: |
@@ -33,32 +33,35 @@ jobs:
             cap1_only.tex
             cap2_only.tex
             cap3_only.tex
-            cap1_resumen.tex       # NEW
-            cap2_resumen.tex       # NEW
-            cap3_resumen.tex       # NEW
+            cap1_resumen.tex
+            cap2_resumen.tex
+            cap3_resumen.tex
           args: -pdf -interaction=nonstopmode -file-line-error
 
       - name: Debug workspace
         run: |
           echo "Listando archivos en el workspace:"
           ls -la
-          for f in main.pdf cap1_only.pdf cap2_only.pdf cap3_only.pdf \
-                   cap1_resumen.pdf cap2_resumen.pdf cap3_resumen.pdf; do
+          for f in main.pdf cap1_only.pdf cap2_only.pdf cap3_only.pdf cap1_resumen.pdf cap2_resumen.pdf cap3_resumen.pdf; do
             test -f "$f" && echo "OK: $f" || (echo "ERROR: falta $f" && exit 1)
           done
 
       - name: Prepare site (public/)
         run: |
           mkdir -p public
-          # Renombrar PDFs con nombres amigables
-          cp main.pdf             public/LibroControl.pdf
-          cp cap1_only.pdf        public/Capitulo1.pdf
-          cp cap2_only.pdf        public/Capitulo2.pdf
-          cp cap3_only.pdf        public/Capitulo3.pdf
-          cp cap1_resumen.pdf     public/Capitulo1_resumen.pdf   # NEW
-          cp cap2_resumen.pdf     public/Capitulo2_resumen.pdf   # NEW
-          cp cap3_resumen.pdf     public/Capitulo3_resumen.pdf   # NEW
 
+          # PDFs del libro y capítulos
+          cp main.pdf       public/LibroControl.pdf
+          cp cap1_only.pdf  public/Capitulo1.pdf
+          cp cap2_only.pdf  public/Capitulo2.pdf
+          cp cap3_only.pdf  public/Capitulo3.pdf
+
+          # PDFs de resúmenes
+          cp cap1_resumen.pdf public/Resumen_Cap1.pdf
+          cp cap2_resumen.pdf public/Resumen_Cap2.pdf
+          cp cap3_resumen.pdf public/Resumen_Cap3.pdf
+
+          # Página HTML
           cat > public/index.html << 'EOF'
           <!doctype html>
           <meta charset="utf-8">
@@ -66,41 +69,61 @@ jobs:
           <style>
             body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;margin:24px;line-height:1.5}
             .wrap{max-width:1100px;margin:auto}
-            .row{display:flex;gap:16px;flex-wrap:wrap}
+            .row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px}
             .card{flex:1 1 320px;border:1px solid #ddd;border-radius:12px;padding:16px}
             iframe{width:100%;height:60vh;border:1px solid #ddd;border-radius:10px}
             a.button{display:inline-block;margin:8px 0;padding:8px 14px;border:1px solid #444;border-radius:10px;text-decoration:none}
             h2{margin:0 0 8px}
+            h1{margin:0 0 12px}
+            .muted{opacity:.7}
           </style>
           <div class="wrap">
             <h1>LibroControl – Publicaciones</h1>
+            <p class="muted">Compilado automáticamente con GitHub Actions. Cada push a <code>main</code> actualiza estos PDFs.</p>
 
+            <h2>📖 Libro completo</h2>
             <div class="row">
               <div class="card">
-                <h2>📖 Libro completo</h2>
-                <a class="button" href="LibroControl.pdf?v=${GITHUB_RUN_NUMBER}">⬇️ Descargar PDF</a>
-                <iframe src="LibroControl.pdf?v=${GITHUB_RUN_NUMBER}" title="Libro completo"></iframe>
+                <a class="button" href="LibroControl.pdf">⬇️ Descargar PDF</a>
+                <iframe src="LibroControl.pdf" title="Libro completo"></iframe>
               </div>
+            </div>
 
+            <h2>📚 Capítulos</h2>
+            <div class="row">
               <div class="card">
-                <h2>Capítulo 1</h2>
-                <a class="button" href="Capitulo1.pdf?v=${GITHUB_RUN_NUMBER}">⬇️ Descargar PDF</a>
-                <iframe src="Capitulo1.pdf?v=${GITHUB_RUN_NUMBER}" title="Capítulo 1"></iframe>
-                <p><a href="Capitulo1_resumen.pdf?v=${GITHUB_RUN_NUMBER}">🧭 Ver resumen</a></p> <!-- NEW -->
+                <h3>Capítulo 1</h3>
+                <a class="button" href="Capitulo1.pdf">⬇️ Descargar PDF</a>
+                <iframe src="Capitulo1.pdf" title="Capítulo 1"></iframe>
               </div>
-
               <div class="card">
-                <h2>Capítulo 2</h2>
-                <a class="button" href="Capitulo2.pdf?v=${GITHUB_RUN_NUMBER}">⬇️ Descargar PDF</a>
-                <iframe src="Capitulo2.pdf?v=${GITHUB_RUN_NUMBER}" title="Capítulo 2"></iframe>
-                <p><a href="Capitulo2_resumen.pdf?v=${GITHUB_RUN_NUMBER}">🧭 Ver resumen</a></p> <!-- NEW -->
+                <h3>Capítulo 2</h3>
+                <a class="button" href="Capitulo2.pdf">⬇️ Descargar PDF</a>
+                <iframe src="Capitulo2.pdf" title="Capítulo 2"></iframe>
               </div>
-
               <div class="card">
-                <h2>Capítulo 3</h2>
-                <a class="button" href="Capitulo3.pdf?v=${GITHUB_RUN_NUMBER}">⬇️ Descargar PDF</a>
-                <iframe src="Capitulo3.pdf?v=${GITHUB_RUN_NUMBER}" title="Capítulo 3"></iframe>
-                <p><a href="Capitulo3_resumen.pdf?v=${GITHUB_RUN_NUMBER}">🧭 Ver resumen</a></p> <!-- NEW -->
+                <h3>Capítulo 3</h3>
+                <a class="button" href="Capitulo3.pdf">⬇️ Descargar PDF</a>
+                <iframe src="Capitulo3.pdf" title="Capítulo 3"></iframe>
+              </div>
+            </div>
+
+            <h2>📑 Resúmenes</h2>
+            <div class="row">
+              <div class="card">
+                <h3>Resumen Capítulo 1</h3>
+                <a class="button" href="Resumen_Cap1.pdf">⬇️ Descargar PDF</a>
+                <iframe src="Resumen_Cap1.pdf" title="Resumen Capítulo 1"></iframe>
+              </div>
+              <div class="card">
+                <h3>Resumen Capítulo 2</h3>
+                <a class="button" href="Resumen_Cap2.pdf">⬇️ Descargar PDF</a>
+                <iframe src="Resumen_Cap2.pdf" title="Resumen Capítulo 2"></iframe>
+              </div>
+              <div class="card">
+                <h3>Resumen Capítulo 3</h3>
+                <a class="button" href="Resumen_Cap3.pdf">⬇️ Descargar PDF</a>
+                <iframe src="Resumen_Cap3.pdf" title="Resumen Capítulo 3"></iframe>
               </div>
             </div>
           </div>
