@@ -30,8 +30,7 @@ jobs:
           echo "\\def\\BuildSHA{${GITHUB_SHA}}" > build.tex
           echo "\\def\\BuildDate{`date -u +%Y-%m-%dT%H:%M:%SZ`}" >> build.tex
 
-
-      - name: Build PDFs (libro + capítulos + resúmenes)
+      - name: Build PDFs (libro + capítulos + resúmenes + slides)
         uses: xu-cheng/latex-action@v3
         with:
           root_file: |
@@ -42,6 +41,9 @@ jobs:
             cap1_resumen.tex
             cap2_resumen.tex
             cap3_resumen.tex
+            slides/cap1_slides.tex
+            slides/cap2_slides.tex
+            slides/cap3_slides.tex
           args: -pdf -interaction=nonstopmode -file-line-error
 
       # --- Depuración opcional: verifica que los PDFs existan
@@ -49,7 +51,11 @@ jobs:
         run: |
           echo "Listando archivos en el workspace:"
           ls -la
-          for f in main.pdf cap1_only.pdf cap2_only.pdf cap3_only.pdf cap1_resumen.pdf cap2_resumen.pdf cap3_resumen.pdf; do
+          for f in \
+            main.pdf cap1_only.pdf cap2_only.pdf cap3_only.pdf \
+            cap1_resumen.pdf cap2_resumen.pdf cap3_resumen.pdf \
+            slides/cap1_slides.pdf slides/cap2_slides.pdf slides/cap3_slides.pdf
+          do
             test -f "$f" && echo "OK: $f encontrado" || (echo "ERROR: $f NO existe" && exit 1)
           done
 
@@ -57,13 +63,21 @@ jobs:
         run: |
           mkdir -p public
           # Renombrar PDFs con nombres amigables
-          cp main.pdf          public/LibroControl.pdf
-          cp cap1_only.pdf     public/Capitulo1.pdf
-          cp cap2_only.pdf     public/Capitulo2.pdf
-          cp cap3_only.pdf     public/Capitulo3.pdf
-          cp cap1_resumen.pdf  public/Resumen_Cap1.pdf
-          cp cap2_resumen.pdf  public/Resumen_Cap2.pdf
-          cp cap3_resumen.pdf  public/Resumen_Cap3.pdf
+          cp main.pdf                  public/LibroControl.pdf
+          cp cap1_only.pdf             public/Capitulo1.pdf
+          cp cap2_only.pdf             public/Capitulo2.pdf
+          cp cap3_only.pdf             public/Capitulo3.pdf
+          cp cap1_resumen.pdf          public/Resumen_Cap1.pdf
+          cp cap2_resumen.pdf          public/Resumen_Cap2.pdf
+          cp cap3_resumen.pdf          public/Resumen_Cap3.pdf
+          cp slides/cap1_slides.pdf    public/Slides_Cap1.pdf
+          cp slides/cap2_slides.pdf    public/Slides_Cap2.pdf
+          cp slides/cap3_slides.pdf    public/Slides_Cap3.pdf
+
+          # Slides
+          cp slides/cap1_slides.pdf public/Slides_Cap1.pdf
+          cp slides/cap2_slides.pdf public/Slides_Cap2.pdf
+          cp slides/cap3_slides.pdf public/Slides_Cap3.pdf
 
           cat > public/index.html << 'EOF'
           <!doctype html>
@@ -81,28 +95,29 @@ jobs:
           </style>
           <div class="wrap">
             <h1>LibroControl – Publicaciones</h1>
-
             <p class="muted">Versión publicada por GitHub Actions (compilación automática desde LaTeX).</p>
 
+            <h2>📖 Libro completo</h2>
             <div class="row">
               <div class="card">
-                <h2>📖 Libro completo</h2>
+                <h2>Libro completo</h2>
                 <a class="button" href="LibroControl.pdf">⬇️ Descargar PDF</a>
                 <iframe src="LibroControl.pdf" title="Libro completo"></iframe>
               </div>
+            </div>
 
+            <h2 style="margin-top:28px">📚 Capítulos individuales</h2>
+            <div class="row">
               <div class="card">
                 <h2>Capítulo 1</h2>
                 <a class="button" href="Capitulo1.pdf">⬇️ Descargar PDF</a>
                 <iframe src="Capitulo1.pdf" title="Capítulo 1"></iframe>
               </div>
-
               <div class="card">
                 <h2>Capítulo 2</h2>
                 <a class="button" href="Capitulo2.pdf">⬇️ Descargar PDF</a>
                 <iframe src="Capitulo2.pdf" title="Capítulo 2"></iframe>
               </div>
-
               <div class="card">
                 <h2>Capítulo 3</h2>
                 <a class="button" href="Capitulo3.pdf">⬇️ Descargar PDF</a>
@@ -117,17 +132,34 @@ jobs:
                 <a class="button" href="Resumen_Cap1.pdf">⬇️ Descargar PDF</a>
                 <iframe src="Resumen_Cap1.pdf" title="Resumen Capítulo 1"></iframe>
               </div>
-
               <div class="card">
                 <h2>Resumen Capítulo 2</h2>
                 <a class="button" href="Resumen_Cap2.pdf">⬇️ Descargar PDF</a>
                 <iframe src="Resumen_Cap2.pdf" title="Resumen Capítulo 2"></iframe>
               </div>
-
               <div class="card">
                 <h2>Resumen Capítulo 3</h2>
                 <a class="button" href="Resumen_Cap3.pdf">⬇️ Descargar PDF</a>
                 <iframe src="Resumen_Cap3.pdf" title="Resumen Capítulo 3"></iframe>
+              </div>
+            </div>
+
+            <h2 style="margin-top:28px">🖥️ Slides por capítulo</h2>
+            <div class="row">
+              <div class="card">
+                <h2>Slides Capítulo 1</h2>
+                <a class="button" href="Slides_Cap1.pdf">⬇️ Descargar PDF</a>
+                <iframe src="Slides_Cap1.pdf" title="Slides Capítulo 1"></iframe>
+              </div>
+              <div class="card">
+                <h2>Slides Capítulo 2</h2>
+                <a class="button" href="Slides_Cap2.pdf">⬇️ Descargar PDF</a>
+                <iframe src="Slides_Cap2.pdf" title="Slides Capítulo 2"></iframe>
+              </div>
+              <div class="card">
+                <h2>Slides Capítulo 3</h2>
+                <a class="button" href="Slides_Cap3.pdf">⬇️ Descargar PDF</a>
+                <iframe src="Slides_Cap3.pdf" title="Slides Capítulo 3"></iframe>
               </div>
             </div>
           </div>
