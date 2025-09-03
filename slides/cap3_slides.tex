@@ -6,7 +6,9 @@
 \usepackage[T1]{fontenc}
 
 \usepackage{graphicx}
-\graphicspath{{figuras/}}
+\usepackage{ifthen} % no imprescindible, pero útil si usas condiciones
+\graphicspath{{figuras/}{./figuras/}{./}}
+
 
 \title{Capítulo 3 — Simulación}
 \author{LibroControl}
@@ -26,9 +28,13 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Resultado de simulación}
-  \centering
-  \includegraphics[width=\linewidth]{cap3_simulacion.png}
-\end{frame}
+\IfFileExists{figuras/cap3_diagrama.png}{
+  \includegraphics[width=\linewidth]{figuras/cap3_diagrama.png}
+}{
+  \begin{center}
+    \fbox{Imagen no disponible: figuras/cap3_diagrama.png}
+  \end{center}
+}
+
 
 \end{document}

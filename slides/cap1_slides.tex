@@ -3,6 +3,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{ifthen} % no imprescindible, pero útil si usas condiciones
+\graphicspath{{figuras/}{./figuras/}{./}}
+
 
 \title{Capítulo 1 – Introducción al Control}
 \author{Jordan Blancas}
@@ -24,12 +28,13 @@
   \end{itemize}
 \end{frame}
 
-% Frame 2
-\begin{frame}{Diagrama de bloques}
+\IfFileExists{figuras/cap1_diagrama.png}{
+  \includegraphics[width=\linewidth]{figuras/cap1_diagrama.png}
+}{
   \begin{center}
-    \includegraphics[width=0.7\textwidth]{ejemplo.png} % cambia a tu diagrama
+    \fbox{Imagen no disponible: figuras/cap1_diagrama.png}
   \end{center}
-\end{frame}
+}
 
 % Frame 3
 \begin{frame}{Conclusiones}

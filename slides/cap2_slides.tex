@@ -6,7 +6,9 @@
 \usepackage[T1]{fontenc}
 
 \usepackage{graphicx}
-\graphicspath{{figuras/}}
+\usepackage{ifthen} % no imprescindible, pero útil si usas condiciones
+\graphicspath{{figuras/}{./figuras/}{./}}
+
 
 \title{Capítulo 2 — Diagrama de Bode}
 \author{LibroControl}
@@ -26,9 +28,13 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Bode: Magnitud y Fase}
-  \centering
-  \includegraphics[width=\linewidth]{cap2_bode.png}
-\end{frame}
+\IfFileExists{figuras/cap2_diagrama.png}{
+  \includegraphics[width=\linewidth]{figuras/cap2_diagrama.png}
+}{
+  \begin{center}
+    \fbox{Imagen no disponible: figuras/cap2_diagrama.png}
+  \end{center}
+}
+
 
 \end{document}
