@@ -51,12 +51,7 @@ jobs:
         run: |
           echo "PWD = $(pwd)"
           echo "Listado de PDFs (profundidad 2):"
-          find . -maxdepth 2 -type f -name "*.pdf" -print | sort
-
-      - name: Debug workspace (no-fatal)
-        run: |
-          echo "Árbol de trabajo (nivel 2):"
-          find . -maxdepth 2 -type f -print | sort || true
+          find . -maxdepth 2 -type f -name "*.pdf" -print | sort || true
 
       - name: Prepare site (public/)
         run: |
@@ -85,12 +80,12 @@ jobs:
           copy_first_exist "cap2_resumen.pdf" "Resumen_Cap2.pdf"
           copy_first_exist "cap3_resumen.pdf" "Resumen_Cap3.pdf"
 
-          # Slides (funciona estén en . o en slides/)
+          # Slides (independiente de dónde los genere LaTeX)
           copy_first_exist "cap1_slides.pdf"  "Slides_Cap1.pdf"
           copy_first_exist "cap2_slides.pdf"  "Slides_Cap2.pdf"
           copy_first_exist "cap3_slides.pdf"  "Slides_Cap3.pdf"
 
-          # Página
+          # Generar index.html
           cat > public/index.html << 'EOF'
           <!doctype html>
           <meta charset="utf-8">
