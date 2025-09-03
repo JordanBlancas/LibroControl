@@ -5,8 +5,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-
 \usepackage{graphicx}
+\usepackage{ifthen}
 \graphicspath{{figuras/}{./figuras/}{./}}
 
 \title{Capítulo 2 — Diagrama de Bode}
@@ -27,12 +27,12 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Bode}
+\begin{frame}{Diagrama}
   \centering
   \IfFileExists{figuras/cap2_diagrama.png}{
-    \includegraphics[width=\linewidth]{cap2_diagrama.png}
+    \includegraphics[width=\linewidth]{figuras/cap2_diagrama.png}
   }{
-    \fbox{Imagen no disponible: figuras/cap2_diagrama.png}
+    \fbox{\parbox{0.9\linewidth}{\centering Imagen no disponible: figuras/cap2_diagrama.png}}
   }
 \end{frame}
 

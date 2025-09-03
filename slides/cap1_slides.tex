@@ -1,12 +1,10 @@
 \documentclass{beamer}
-\usetheme{Madrid}
-
 \usepackage[spanish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-
 \usepackage{graphicx}
+\usepackage{ifthen}
 \graphicspath{{figuras/}{./figuras/}{./}}
 
 \title{Capítulo 1 – Introducción al Control}
@@ -27,12 +25,13 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Diagrama}
+% ⬇️ La imagen SIEMPRE dentro de un frame
+\begin{frame}{Diagrama del capítulo}
   \centering
   \IfFileExists{figuras/cap1_diagrama.png}{
-    \includegraphics[width=\linewidth]{cap1_diagrama.png}
+    \includegraphics[width=\linewidth]{figuras/cap1_diagrama.png}
   }{
-    \fbox{Imagen no disponible: figuras/cap1_diagrama.png}
+    \fbox{\parbox{0.9\linewidth}{\centering Imagen no disponible: figuras/cap1_diagrama.png}}
   }
 \end{frame}
 
