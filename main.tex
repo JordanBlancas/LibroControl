@@ -18,18 +18,16 @@
 \newif\ifonlychapter
 \onlychapterfalse % build normal por defecto
 
-
-% Si es build solo de capítulo, desactiva la apertura en impar
-\ifonlychapter
-  \let\cleardoublepage\clearpage
-\fi
-
-
-
 % --- Hook opcional (no-op por defecto; los *_only.tex lo redefinen) ---
 \providecommand{\chaptersel}{}
 \chaptersel
 
+\ifonlychapter
+  \makeatletter
+  \@openrightfalse            % anula 'openright' solo en builds por capítulo
+  \let\cleardoublepage\clearpage % cinturón y tirantes: evita páginas en blanco
+  \makeatother
+\fi
 
 \begin{document}
 
