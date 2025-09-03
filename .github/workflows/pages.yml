@@ -45,6 +45,7 @@ jobs:
             slides/cap2_slides.tex
             slides/cap3_slides.tex
           args: -pdf -interaction=nonstopmode -file-line-error
+          work_in_root_file_dir: false
 
       # --- Depuración opcional: verifica que los PDFs existan
       - name: Debug workspace
@@ -74,10 +75,10 @@ jobs:
           cp slides/cap2_slides.pdf    public/Slides_Cap2.pdf
           cp slides/cap3_slides.pdf    public/Slides_Cap3.pdf
 
-          # Slides
-          cp slides/cap1_slides.pdf public/Slides_Cap1.pdf
-          cp slides/cap2_slides.pdf public/Slides_Cap2.pdf
-          cp slides/cap3_slides.pdf public/Slides_Cap3.pdf
+          # Slides: OJO, sin 'slides/' delante
+          cp cap1_slides.pdf   public/Slides_Cap1.pdf
+          cp cap2_slides.pdf   public/Slides_Cap2.pdf
+          cp cap3_slides.pdf   public/Slides_Cap3.pdf
 
           cat > public/index.html << 'EOF'
           <!doctype html>

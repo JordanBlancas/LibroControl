@@ -4,11 +4,10 @@
 \usepackage[spanish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{lmodern}
 
 \usepackage{graphicx}
-\usepackage{ifthen} % no imprescindible, pero útil si usas condiciones
 \graphicspath{{figuras/}{./figuras/}{./}}
-
 
 \title{Capítulo 2 — Diagrama de Bode}
 \author{LibroControl}
@@ -28,13 +27,13 @@
   \end{itemize}
 \end{frame}
 
-\IfFileExists{figuras/cap2_diagrama.png}{
-  \includegraphics[width=\linewidth]{figuras/cap2_diagrama.png}
-}{
-  \begin{center}
+\begin{frame}{Bode}
+  \centering
+  \IfFileExists{figuras/cap2_diagrama.png}{
+    \includegraphics[width=\linewidth]{cap2_diagrama.png}
+  }{
     \fbox{Imagen no disponible: figuras/cap2_diagrama.png}
-  \end{center}
-}
-
+  }
+\end{frame}
 
 \end{document}

@@ -1,12 +1,13 @@
 \documentclass{beamer}
+\usetheme{Madrid}
+
 \usepackage[spanish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage{graphicx}
-\usepackage{ifthen} % no imprescindible, pero útil si usas condiciones
-\graphicspath{{figuras/}{./figuras/}{./}}
 
+\usepackage{graphicx}
+\graphicspath{{figuras/}{./figuras/}{./}}
 
 \title{Capítulo 1 – Introducción al Control}
 \author{Jordan Blancas}
@@ -14,12 +15,10 @@
 
 \begin{document}
 
-% Portada
 \begin{frame}
   \titlepage
 \end{frame}
 
-% Frame 1
 \begin{frame}{Conceptos básicos}
   \begin{itemize}
     \item Qué es un sistema de control
@@ -28,15 +27,15 @@
   \end{itemize}
 \end{frame}
 
-\IfFileExists{figuras/cap1_diagrama.png}{
-  \includegraphics[width=\linewidth]{figuras/cap1_diagrama.png}
-}{
-  \begin{center}
+\begin{frame}{Diagrama}
+  \centering
+  \IfFileExists{figuras/cap1_diagrama.png}{
+    \includegraphics[width=\linewidth]{cap1_diagrama.png}
+  }{
     \fbox{Imagen no disponible: figuras/cap1_diagrama.png}
-  \end{center}
-}
+  }
+\end{frame}
 
-% Frame 3
 \begin{frame}{Conclusiones}
   \begin{itemize}
     \item El control regula sistemas dinámicos

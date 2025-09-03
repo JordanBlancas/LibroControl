@@ -4,11 +4,10 @@
 \usepackage[spanish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{lmodern}
 
 \usepackage{graphicx}
-\usepackage{ifthen} % no imprescindible, pero útil si usas condiciones
 \graphicspath{{figuras/}{./figuras/}{./}}
-
 
 \title{Capítulo 3 — Simulación}
 \author{LibroControl}
@@ -28,13 +27,13 @@
   \end{itemize}
 \end{frame}
 
-\IfFileExists{figuras/cap3_diagrama.png}{
-  \includegraphics[width=\linewidth]{figuras/cap3_diagrama.png}
-}{
-  \begin{center}
+\begin{frame}{Diagrama}
+  \centering
+  \IfFileExists{figuras/cap3_diagrama.png}{
+    \includegraphics[width=\linewidth]{cap3_diagrama.png}
+  }{
     \fbox{Imagen no disponible: figuras/cap3_diagrama.png}
-  \end{center}
-}
-
+  }
+\end{frame}
 
 \end{document}
