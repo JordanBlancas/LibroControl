@@ -47,39 +47,50 @@ jobs:
           args: -pdf -interaction=nonstopmode -file-line-error
           work_in_root_file_dir: false
 
-      # --- Depuración opcional: verifica que los PDFs existan
-      - name: Debug workspace
+      - name: Debug PDFs
         run: |
-          echo "Listando archivos en el workspace:"
-          ls -la
-          for f in \
-            main.pdf cap1_only.pdf cap2_only.pdf cap3_only.pdf \
-            cap1_resumen.pdf cap2_resumen.pdf cap3_resumen.pdf \
-            slides/cap1_slides.pdf slides/cap2_slides.pdf slides/cap3_slides.pdf
-          do
-            test -f "$f" && echo "OK: $f encontrado" || (echo "ERROR: $f NO existe" && exit 1)
-          done
+          echo "PWD = $(pwd)"
+          echo "Listado de PDFs (profundidad 2):"
+          find . -maxdepth 2 -type f -name "*.pdf" -print | sort
+
+      - name: Debug workspace (no-fatal)
+        run: |
+          echo "Árbol de trabajo (nivel 2):"
+          find . -maxdepth 2 -type f -print | sort || true
 
       - name: Prepare site (public/)
         run: |
+          set -e
           mkdir -p public
-          # Renombrar PDFs con nombres amigables
-          cp main.pdf                  public/LibroControl.pdf
-          cp cap1_only.pdf             public/Capitulo1.pdf
-          cp cap2_only.pdf             public/Capitulo2.pdf
-          cp cap3_only.pdf             public/Capitulo3.pdf
-          cp cap1_resumen.pdf          public/Resumen_Cap1.pdf
-          cp cap2_resumen.pdf          public/Resumen_Cap2.pdf
-          cp cap3_resumen.pdf          public/Resumen_Cap3.pdf
-          cp slides/cap1_slides.pdf    public/Slides_Cap1.pdf
-          cp slides/cap2_slides.pdf    public/Slides_Cap2.pdf
-          cp slides/cap3_slides.pdf    public/Slides_Cap3.pdf
 
-          # Slides: OJO, sin 'slides/' delante
-          cp cap1_slides.pdf   public/Slides_Cap1.pdf
-          cp cap2_slides.pdf   public/Slides_Cap2.pdf
-          cp cap3_slides.pdf   public/Slides_Cap3.pdf
+          copy_first_exist () {
+            # $1 = nombre base (sin ruta), $2 = destino en public
+            for src in "./$1" "./slides/$1"; do
+              if [ -f "$src" ]; then
+                cp -f "$src" "public/$2"
+                echo "OK: copiado $src -> public/$2"
+                return 0
+              fi
+            done
+            echo "ERROR: no se encontró $1 ni en . ni en ./slides/"
+            exit 1
+          }
 
+          # Libro/capítulos/resúmenes
+          copy_first_exist "main.pdf"         "LibroControl.pdf"
+          copy_first_exist "cap1_only.pdf"    "Capitulo1.pdf"
+          copy_first_exist "cap2_only.pdf"    "Capitulo2.pdf"
+          copy_first_exist "cap3_only.pdf"    "Capitulo3.pdf"
+          copy_first_exist "cap1_resumen.pdf" "Resumen_Cap1.pdf"
+          copy_first_exist "cap2_resumen.pdf" "Resumen_Cap2.pdf"
+          copy_first_exist "cap3_resumen.pdf" "Resumen_Cap3.pdf"
+
+          # Slides (funciona estén en . o en slides/)
+          copy_first_exist "cap1_slides.pdf"  "Slides_Cap1.pdf"
+          copy_first_exist "cap2_slides.pdf"  "Slides_Cap2.pdf"
+          copy_first_exist "cap3_slides.pdf"  "Slides_Cap3.pdf"
+
+          # Página
           cat > public/index.html << 'EOF'
           <!doctype html>
           <meta charset="utf-8">
