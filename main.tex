@@ -13,6 +13,11 @@
 \fancyfoot[C]{Build: \BuildSHA\ (\BuildDate)}
 \renewcommand{\headrulewidth}{0pt}
 
+% Fija el idioma activo desde el inicio (evita 'nil' en el TOC)
+\AtBeginDocument{\selectlanguage{spanish}}
+
+% Evita el warning de fancyhdr sobre la altura del encabezado
+\setlength{\headheight}{15.5pt}
 
 % --- Flag para builds por capítulo (debe ir ANTES de \chaptersel) ---
 \newif\ifonlychapter
@@ -24,28 +29,28 @@
 
 \ifonlychapter
   \makeatletter
-  \@openrightfalse            % anula 'openright' solo en builds por capítulo
-  \let\cleardoublepage\clearpage % cinturón y tirantes: evita páginas en blanco
-  \makeatother
-\fi
+    \@openrightfalse            % anula 'openright' solo en builds por capítulo
+      \let\cleardoublepage\clearpage % cinturón y tirantes: evita páginas en blanco
+        \makeatother
+        \fi
 
-\begin{document}
+        \begin{document}
 
-% Si es build normal: frontmatter + TOC + mainmatter.
-% Si es solo capítulo: entra directo a mainmatter y NO hay TOC.
-\ifonlychapter
-  \mainmatter
-\else
-  \frontmatter
-  \tableofcontents
-  \mainmatter
-\fi
+        % Si es build normal: frontmatter + TOC + mainmatter.
+        % Si es solo capítulo: entra directo a mainmatter y NO hay TOC.
+        \ifonlychapter
+          \mainmatter
+          \else
+            \frontmatter
+              \tableofcontents
+                \mainmatter
+                \fi
 
-\include{capitulos/cap1}
-\include{capitulos/cap2}
-\include{capitulos/cap3}
+                \include{capitulos/cap1}
+                \include{capitulos/cap2}
+                \include{capitulos/cap3}
 
-\backmatter
-% Bibliografía más adelante
+                \backmatter
+                % Bibliografía más adelante
 
-\end{document}
+                \end{document}
